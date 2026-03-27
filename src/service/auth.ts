@@ -29,11 +29,11 @@ export const getMyDetails = async () => {
 };
 
 export const getAllPlayersProtocol = async () => {
-  const res = await api.get("/users/players");
+  const res = await api.get("/auth/players");
   return res.data;
 };
 
 export const togglePlayerStatusProtocol = async (id: string) => {
-  const res = await api.patch(`/users/${id}/status`);
+  const res = await api.patch(`/auth/${id}/status`);
   return res.data;
 };
