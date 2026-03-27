@@ -13,6 +13,7 @@ const PlayerDashboard = lazy(() => import("../pages/player/PlayerDashboard"));
 const AdminCategory = lazy(() => import("../pages/admin/AdminCategories"));
 const AdminUpload = lazy(() => import("../pages/admin/AdminUpload"));
 const GameDashboard = lazy(() => import("../pages/player/GameDashboard"));
+const AdminPlayers = lazy(() => import("../pages/admin/AdminPlayers"));
 
 const GamingLoader = () => (
   <div className="flex flex-col items-center justify-center h-screen bg-[#0a0a0a] overflow-hidden relative selection:bg-green-500/30">
@@ -67,6 +68,7 @@ export default function Router() {
           >
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="players" element={<AdminPlayers />} />
             <Route path="upload" element={<AdminUpload />} />
             <Route path="categories" element={<AdminCategory />} />
           </Route>

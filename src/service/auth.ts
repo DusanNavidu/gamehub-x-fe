@@ -25,5 +25,15 @@ export const register = async (fullName: string, email: string) => {
 
 export const getMyDetails = async () => {
   const res = await api.get("/auth/me");
-  return res.data; // Response: { message: "ok", data: { id, email, fullName } }
+  return res.data;
+};
+
+export const getAllPlayersProtocol = async () => {
+  const res = await api.get("/users/players");
+  return res.data;
+};
+
+export const togglePlayerStatusProtocol = async (id: string) => {
+  const res = await api.patch(`/users/${id}/status`);
+  return res.data;
 };
