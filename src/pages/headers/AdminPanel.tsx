@@ -10,7 +10,7 @@ interface AdminPanelProps {
 export default function AdminPanel({ isOpen, setIsOpen }: AdminPanelProps) {
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: "Player Logs", path: "/admin/users", icon: <Users className="w-5 h-5" /> },
+    { name: "Player Logs", path: "/admin/players", icon: <Users className="w-5 h-5" /> },
     { name: "Upload Protocol", path: "/admin/upload", icon: <UploadCloud className="w-5 h-5" /> },
     { name: "Category Manager", path: "/admin/categories", icon: <Gamepad2 className="w-5 h-5" /> },
     { name: "System Settings", path: "/admin/settings", icon: <Settings className="w-5 h-5" /> },
