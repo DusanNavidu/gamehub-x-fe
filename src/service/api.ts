@@ -2,23 +2,27 @@ import axios, { AxiosError } from "axios";
 import { refreshTokens } from "./auth";
 
 const api = axios.create({
-  baseURL: "https://game-hub-x-backend.vercel.app/api/v1",
+  baseURL: "http://localhost:5000/api/v1"
 });
 
-const PUBLIC_ENDPOINTS = ["/auth/request-otp", "/auth/verify-otp", "/auth/refresh-token", "/auth/register"];
+const PUBLIC_ENDPOINTS = ["/auth/login-request", "/auth/login-verify", "/auth/register", "/auth/refresh"];
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
-  const isPublic = PUBLIC_ENDPOINTS.some((url) => config.url?.includes(url));
 
-  if (!isPublic && token) {
+  const isPUblic = PUBLIC_ENDPOINTS.some((url) => config.url?.includes(url));
+
+  if (!isPUblic && token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest: any = error.config;
 
@@ -31,22 +35,21 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) throw new Error("No refresh token available");
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
+        }
 
         const data = await refreshTokens(refreshToken);
-        
         localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
 
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-        return api(originalRequest); // 🔴 axios වෙනුවට api පාවිච්චි කරන්න 
-        
+
+        return axios(originalRequest);
       } catch (refreshErr) {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("userId");
-        window.location.href = "/login"; // Logout වෙනවා
+        window.location.href = "/login";
+        console.error(refreshErr);
         return Promise.reject(refreshErr);
       }
     }

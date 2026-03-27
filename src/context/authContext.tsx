@@ -1,44 +1,44 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react"
+import { getMyDetails } from "../service/auth"
 
-const AuthContext = createContext<any>(null);
+const AuthContext = createContext<any>(null)
 
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // API call nathuwa kelinma local storage eken gannawa
-    const token = localStorage.getItem("accessToken");
-    const role = localStorage.getItem("userRole");
-    const id = localStorage.getItem("userId");
-
-    if (token && role) {
-      setUser({ id, role, token });
+    const token = localStorage.getItem("accessToken")
+    if (token) {
+      getMyDetails()
+        .then((res) => {
+          if (res.data) setUser(res.data)
+          else setUser(null)
+        })
+        .catch((err) => {
+          console.error(err)
+          setUser(null)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
     } else {
-      setUser(null);
+      setUser(null)
+      setLoading(false)
     }
-    
-    setLoading(false); // Kelinma false karanawa api load wenakan inna oni nathi nisa
-  }, []);
-
-  // Logout function eka methanama damma, lesi wenna
-  const logout = () => {
-    localStorage.clear();
-    setUser(null);
-    window.location.href = "/login";
-  };
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, logout }}>
+    <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider")
   }
-  return context;
-};
+  return context
+}

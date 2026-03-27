@@ -9,10 +9,10 @@ const Index = lazy(() => import("../pages/Index"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
-const PlayerDashboard = lazy(() => import("../pages/player/PlayerDashboard"));
+// const PlayerDashboard = lazy(() => import("../pages/player/PlayerDashboard"));
 const AdminCategory = lazy(() => import("../pages/admin/AdminCategories"));
 const AdminUpload = lazy(() => import("../pages/admin/AdminUpload"));
-const GameDashboard = lazy(() => import("../pages/player/GameDashboard"));
+// const GameDashboard = lazy(() => import("../pages/player/GameDashboard"));
 
 const GamingLoader = () => (
   <div className="flex flex-col items-center justify-center h-screen bg-[#0a0a0a] overflow-hidden relative selection:bg-green-500/30">
@@ -80,17 +80,17 @@ export default function Router() {
             }
           >
             <Route index element={<Navigate to="/player/dashboard" replace />} />
-            <Route path="dashboard" element={<PlayerDashboard />} />
+            {/* <Route path="dashboard" element={<PlayerDashboard />} /> */}
           </Route>
 
-          <Route
+          {/* <Route
             path="/player/play"
             element={
               <RequireAuth roles={["PLAYER"]}>
                 <GameDashboard />
               </RequireAuth>
             }
-          />
+          /> */}
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

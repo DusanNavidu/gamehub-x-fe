@@ -1,20 +1,20 @@
-import api from "./api"; // උඩ හදපු අලුත් axios instance එක
+import api from "./api";
 
-// 1. අලුත් Game එකක් Upload කිරීම
+// 1. Upload Game (FormData use karanne files nisa)
 export const uploadGameProtocol = async (formData: FormData) => {
-  const res = await api.post("/games/upload", formData, {
+  const res = await api.post("/games", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
 };
 
-// 2. සියලුම Games ලබා ගැනීම
+// 2. Get All Games
 export const getAllGamesProtocol = async () => {
   const res = await api.get("/games");
-  return res.data;
+  return res.data; // Backend eken enne { data: [...] }
 };
 
-// 3. දැනට තියෙන Game එකක් Update කිරීම
+// 3. Update Game
 export const updateGameProtocol = async (id: string, formData: FormData) => {
   const res = await api.put(`/games/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -22,7 +22,7 @@ export const updateGameProtocol = async (id: string, formData: FormData) => {
   return res.data;
 };
 
-// 4. Game එක Active/Inactive කිරීම
+// 4. Toggle Status
 export const toggleGameStatusProtocol = async (id: string) => {
   const res = await api.patch(`/games/${id}/status`);
   return res.data;

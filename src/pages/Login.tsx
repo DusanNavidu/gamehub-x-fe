@@ -10,52 +10,55 @@ export default function Login() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(""); // Toast wenuwata inline error pennamu lassanata
+  const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
+  // Step 1: Request OTP from Backend
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg("");
     try {
       await requestOTP(email);
+      toast.info("Verification code sent to email.");
       setStep(2);
     } catch (err: any) {
       setErrorMsg(
-        err.response?.data?.message ||
-          "Connection lost. Cannot reach the server.",
+        err.response?.data?.message || "Connection lost. Cannot reach the server."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  // handleVerify function eka athule update karanna:
-
+  // Step 2: Verify OTP and Login
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg("");
     try {
       const res = await verifyOTPCode(email, otp);
-      const data = res.data?.data || res.data;
+      
+      // Backend eken res.data ekata thama accessToken, refreshToken saha user enne
+      // backend eka anuwa meka destruct karagamu
+      const { accessToken, refreshToken, user } = res;
 
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      localStorage.setItem("userRole", data.role);
-      localStorage.setItem("userId", data.id);
+      // Local Storage eke tokens save kireema
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
 
-      setUser({ id: data.id, role: data.role, token: data.accessToken });
+      // Auth Context eka update kireema
+      setUser(user);
 
       toast.success("Access Granted. Booting system...");
 
-      // Role eka anuwa redirect kirima
-      if (data.role === "ADMIN") {
+      // User role eka anuwa redirection fix kireema
+      if (user.role === "ADMIN") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/player/dashboard"); // Player dashboard ekata
+        navigate("/player/dashboard");
       }
     } catch (err: any) {
       setErrorMsg(err.response?.data?.message || "Invalid clearance code.");
@@ -66,7 +69,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 font-mono relative overflow-hidden">
-      {/* Lassan Background Elements */}
+      {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50"></div>
       <div className="absolute w-[500px] h-[500px] bg-green-500/10 rounded-full blur-[120px] -top-20 -left-20 pointer-events-none"></div>
       <div className="absolute w-[300px] h-[300px] bg-green-900/20 rounded-full blur-[80px] bottom-10 right-10 pointer-events-none"></div>
@@ -84,7 +87,7 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Error Message Box */}
+        {/* Inline Error Message Display */}
         {errorMsg && (
           <div className="mb-6 p-3 bg-red-500/10 border border-red-500/30 rounded flex items-start gap-3 animate-pulse">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -144,6 +147,7 @@ export default function Login() {
               <input
                 type="text"
                 required
+                autoFocus
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
@@ -160,8 +164,10 @@ export default function Login() {
             </button>
             <button
               type="button"
+              disabled={loading}
               onClick={() => {
                 setStep(1);
+                setOtp("");
                 setErrorMsg("");
               }}
               className="w-full text-xs text-gray-500 hover:text-white transition-colors uppercase tracking-widest mt-2"
