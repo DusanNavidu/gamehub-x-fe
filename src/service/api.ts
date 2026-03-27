@@ -1,8 +1,9 @@
 import axios, { AxiosError } from "axios";
-import { refreshTokens } from "./auth"; // ඔයාගේ auth service path එක හරියටම දෙන්න
+import { refreshTokens } from "./auth"; 
 
+// 🔴 මෙතනට ඔයාගේ Backend URL එක හරියටම දැම්මා 🔴
 const api = axios.create({
-  baseURL: "https://game-hub-x-backend.vercel.app/api/v1", // Express backend URL
+  baseURL: "https://game-hub-x-backend.vercel.app/api/v1", 
 });
 
 const PUBLIC_ENDPOINTS = ["/auth/request-otp", "/auth/verify-otp", "/auth/refresh-token", "/auth/register"];
@@ -39,14 +40,14 @@ api.interceptors.response.use(
         localStorage.setItem("refreshToken", data.refreshToken);
 
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-        return api(originalRequest); // 🔴 axios වෙනුවට api පාවිච්චි කරන්න 
+        return api(originalRequest);
         
       } catch (refreshErr) {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("userRole");
         localStorage.removeItem("userId");
-        window.location.href = "/login"; // Logout වෙනවා
+        window.location.href = "/login";
         return Promise.reject(refreshErr);
       }
     }
