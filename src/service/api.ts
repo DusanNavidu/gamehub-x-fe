@@ -1,8 +1,8 @@
 import axios, { AxiosError } from "axios";
-import { refreshTokens } from "./auth"; // ඔයාගේ auth service path එක හරියටම දෙන්න
+import { refreshTokens } from "./auth";
 
 const api = axios.create({
-  baseURL: "https://game-hub-x-backend.vercel.app/", // Express backend URL
+  baseURL: "https://game-hub-x-backend.vercel.app/",
 });
 
 const PUBLIC_ENDPOINTS = ["/auth/request-otp", "/auth/verify-otp", "/auth/refresh-token", "/auth/register"];
