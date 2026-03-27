@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Maximize } from "lucide-react";
-import { Game } from "./PlayerDashboard"; // PlayerDashboard එකෙන් Game interface එක import කරගන්නවා
+import { ArrowLeft, Maximize, Loader2 } from "lucide-react"; // Loader2 import කළා
+import { Game } from "./PlayerDashboard";
 
-// Router එකෙන් එන state එකේ type එක define කරනවා
 interface LocationState {
   gameData?: Game;
 }
@@ -12,9 +11,12 @@ export default function GameDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Location state එක type cast කරනවා
   const state = location.state as LocationState;
   const gameData = state?.gameData;
+
+  // 🔴 අලුත් State ටික (HTML එකයි Loading එකයි තියාගන්න)
+  const [gameHtml, setGameHtml] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleFullscreen = () => {
     const elem = document.documentElement;
@@ -22,6 +24,28 @@ export default function GameDashboard() {
       elem.requestFullscreen();
     }
   };
+
+  // 🔴 Game URL එකෙන් HTML කෝඩ් එක Fetch කරන කොටස 🔴
+  useEffect(() => {
+    const fetchGameContent = async () => {
+      if (!gameData?.gameUrl) return;
+
+      try {
+        setLoading(true);
+        // Cloudinary ලින්ක් එකෙන් file එක text එකක් විදිහට ගන්නවා
+        const response = await fetch(gameData.gameUrl);
+        const htmlText = await response.text();
+        
+        setGameHtml(htmlText);
+      } catch (error) {
+        console.error("Failed to load game content:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGameContent();
+  }, [gameData?.gameUrl]);
 
   if (!gameData || !gameData.gameUrl) {
     return (
@@ -66,15 +90,26 @@ export default function GameDashboard() {
       </header>
 
       {/* Game Iframe Container */}
-      {/* වෙනස් කළේ: flex-grow h-full අයින් කරලා flex-1 දැම්මා */}
       <div className="flex-1 w-full bg-black relative min-h-0">
-        <iframe
-          src={gameData.gameUrl}
-          className="absolute inset-0 w-full h-full border-none"
-          title={gameData.title}
-          allow="fullscreen; autoplay"
-          sandbox="allow-scripts allow-same-origin allow-forms"
-        />
+        
+        {/* 🔴 Loading Screen එක 🔴 */}
+        {loading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-green-500 bg-[#050505] z-10">
+            <Loader2 className="w-10 h-10 animate-spin mb-4" />
+            <p className="font-mono text-sm tracking-widest uppercase">Initializing Nexus Module...</p>
+          </div>
+        )}
+        
+        {/* 🔴 srcDoc පාවිච්චි කරන අලුත් Iframe එක 🔴 */}
+        {gameHtml && !loading && (
+          <iframe
+            srcDoc={gameHtml}
+            className="absolute inset-0 w-full h-full border-none"
+            title={gameData.title}
+            allow="fullscreen; autoplay"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+          />
+        )}
       </div>
       
     </div>

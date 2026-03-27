@@ -1,4 +1,4 @@
-import api from "./api"; // ඔයාගේ axios instance එක
+import api from "./api"; // උඩ හදපු අලුත් axios instance එක
 
 // 1. අලුත් Game එකක් Upload කිරීම
 export const uploadGameProtocol = async (formData: FormData) => {
@@ -8,10 +8,9 @@ export const uploadGameProtocol = async (formData: FormData) => {
   return res.data;
 };
 
-// 2. සියලුම Games ලබා ගැනීම (Table එක සඳහා)
+// 2. සියලුම Games ලබා ගැනීම
 export const getAllGamesProtocol = async () => {
   const res = await api.get("/games");
-//   console.log("Fetched games:", res.data); // Debugging log
   return res.data;
 };
 
