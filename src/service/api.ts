@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import { refreshTokens } from "./auth";
 
 const api = axios.create({
-  baseURL: "https://game-hub-x-backend.vercel.app//api/v1/",
+  baseURL: "https://game-hub-x-backend.vercel.app/api/v1/",
 });
 
 const PUBLIC_ENDPOINTS = ["/auth/request-otp", "/auth/verify-otp", "/auth/refresh-token", "/auth/register"];
