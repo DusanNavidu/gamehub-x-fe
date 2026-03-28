@@ -328,7 +328,7 @@ export default function AdminUpload() {
                           <img 
                             src={game.thumbnailUrl} 
                             alt={game.title} 
-                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                            className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-300"
                           />
                         </div>
                       </td>
